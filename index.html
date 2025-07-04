@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白泽·破妄 - 双语音频播放器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M40,100 Q100,40 160,100 Q100,160 40,100Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            padding: 40px 30px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+        
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.8;
+            margin-top: 10px;
+            max-width: 600px;
+            margin: 15px auto 0;
+            line-height: 1.6;
+        }
+        
+        .player-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .player-card {
+            background: rgba(30, 30, 50, 0.8);
+            border-radius: 20px;
+            width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .language-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            margin-right: 20px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+        
+        .mandarin .language-icon {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .sichuan .language-icon {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .card-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            color: #aaa;
+        }
+        
+        .visualizer {
+            height: 120px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar {
+            width: 8px;
+            background: linear-gradient(to top, #3498db, #1abc9c);
+            margin: 0 2px;
+            border-radius: 4px 4px 0 0;
+            height: 20%;
+        }
+        
+        .mandarin .bar {
+            background: linear-gradient(to top, #e74c3c, #f39c12);
+        }
+        
+        .sichuan .bar {
+            background: linear-gradient(to top, #2ecc71, #27ae60);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .play-btn::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+        
+        .play-btn:hover::before {
+            transform: translate(50%, 50%) rotate(45deg);
+        }
+        
+        .mandarin .play-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .sichuan .play-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(52, 152, 219, 0.8);
+        }
+        
+        .mandarin .play-btn:hover {
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+        }
+        
+        .sichuan .play-btn:hover {
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+        }
+        
+        .time-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60%;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #1abc9c);
+            border-radius: 4px;
+            width: 0%;
+            position: relative;
+            transition: width 0.1s linear;
+        }
+        
+        .progress::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mandarin .progress {
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+        }
+        
+        .sichuan .progress {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+        
+        .time {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .volume-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .volume-container i {
+            margin-right: 10px;
+            opacity: 0.7;
+        }
+        
+        .volume-slider {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .volume-level {
+            height: 100%;
+            background: #3498db;
+            border-radius: 3px;
+            width: 80%;
+        }
+        
+        .mandarin .volume-level {
+            background: #e74c3c;
+        }
+        
+        .sichuan .volume-level {
+            background: #2ecc71;
+        }
+        
+        .decoration {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+            transition: all 0.5s;
+        }
+        
+        .mandarin .decoration {
+            bottom: 20px;
+            right: 20px;
+            font-size: 6rem;
+        }
+        
+        .sichuan .decoration {
+            bottom: 10px;
+            right: 30px;
+            font-size: 5rem;
+        }
+        
+        .player-card:hover .decoration {
+            opacity: 0.2;
+            transform: scale(1.1);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 1rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .audio-notice {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #ff9999;
+            font-style: italic;
+        }
+        
+        @media (max-width: 1100px) {
+            .player-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .player-card {
+                width: 90%;
+                max-width: 500px;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .language-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.7rem;
+            }
+            
+            .play-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.7rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>白泽·破妄</h1>
+            <p class="subtitle">探索神话中的神兽白泽，聆听普通话与四川话两种方言演绎的奇幻故事，感受语言带来的独特魅力。</p>
+        </header>
+        
+        <div class="player-container">
+            <!-- 普通话版本 -->
+            <div class="player-card mandarin">
+                <div class="decoration">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                
+                <div class="card-header">
+                    <div class="language-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">普通话版</div>
+                        <div class="card-subtitle">白泽·破妄 (标准发音)</div>
+                    </div>
+                </div>
+                
+                <div class="visualizer" id="mandarin-visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                
+                <div class="controls">
+                    <div class="play-btn" id="mandarin-play">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    
+                    <div class="time-info">
+                        <div class="progress-container" id="mandarin-progress-container">
+                            <div class="progress" id="mandarin-progress"></div>
+                        </div>
+                        <div class="time">
+                            <span class="current" id="mandarin-current">0:00</span>
+                            <span class="duration" id="mandarin-duration">4:36</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="volume-container">
+                    <i class="fas fa-volume-up"></i>
+                    <div class="volume-slider" id="mandarin-volume">
+                        <div class="volume-level" id="mandarin-volume-level"></div>
+                    </div>
+                </div>
+                
+                <audio id="mandarin-audio" preload="metadata">
+                    <source src="白泽·破妄（普通话版）.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            
+            <!-- 四川话版本 -->
+            <div class="player-card sichuan">
+                <div class="decoration">
+                    <i class="fas fa-paw"></i>
+                </div>
+                
+                <div class="card-header">
+                    <div class="language-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">四川话版</div>
+                        <div class="card-subtitle">白泽·破妄 (巴蜀韵味)</div>
+                    </div>
+                </div>
+                
+                <div class="visualizer" id="sichuan-visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                
+                <div class="controls">
+                    <div class="play-btn" id="sichuan-play">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    
+                    <div class="time-info">
+                        <div class="progress-container" id="sichuan-progress-container">
+                            <div class="progress" id="sichuan-progress"></div>
+                        </div>
+                        <div class="time">
+                            <span class="current" id="sichuan-current">0:00</span>
+                            <span class="duration" id="sichuan-duration">4:20</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="volume-container">
+                    <i class="fas fa-volume-up"></i>
+                    <div class="volume-slider" id="sichuan-volume">
+                        <div class="volume-level" id="sichuan-volume-level"></div>
+                    </div>
+                </div>
+                
+                <audio id="sichuan-audio" preload="metadata">
+                    <source src="白泽·破妄（四川话版）.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+        
+        <p class="audio-notice">*音频文件与HTML文件位于同一目录，可直接播放</p>
+        
+        <footer>
+            <p>音频文件: 白泽·破妄（普通话版）.mp3 | 白泽·破妄（四川话版）.mp3</p>
+            <p>© 2023 音频播放器 | 设计：HTML/CSS/JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // 获取普通话版音频元素和控制元素
+        const mandarinAudio = document.getElementById('mandarin-audio');
+        const mandarinPlayBtn = document.getElementById('mandarin-play');
+        const mandarinIcon = mandarinPlayBtn.querySelector('i');
+        const mandarinProgress = document.getElementById('mandarin-progress');
+        const mandarinProgressContainer = document.getElementById('mandarin-progress-container');
+        const mandarinCurrentTime = document.getElementById('mandarin-current');
+        const mandarinDuration = document.getElementById('mandarin-duration');
+        const mandarinVolume = document.getElementById('mandarin-volume');
+        const mandarinVolumeLevel = document.getElementById('mandarin-volume-level');
+        const mandarinBars = document.querySelectorAll('.mandarin .bar');
+        
+        // 获取四川话版音频元素和控制元素
+        const sichuanAudio = document.getElementById('sichuan-audio');
+        const sichuanPlayBtn = document.getElementById('sichuan-play');
+        const sichuanIcon = sichuanPlayBtn.querySelector('i');
+        const sichuanProgress = document.getElementById('sichuan-progress');
+        const sichuanProgressContainer = document.getElementById('sichuan-progress-container');
+        const sichuanCurrentTime = document.getElementById('sichuan-current');
+        const sichuanDuration = document.getElementById('sichuan-duration');
+        const sichuanVolume = document.getElementById('sichuan-volume');
+        const sichuanVolumeLevel = document.getElementById('sichuan-volume-level');
+        const sichuanBars = document.querySelectorAll('.sichuan .bar');
+        
+        // 格式化时间为 mm:ss
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec.toString().padStart(2, '0')}`;
+        }
+        
+        // 初始化音频播放器
+        function initAudioPlayer(audio, durationElement) {
+            audio.addEventListener('loadedmetadata', function() {
+                durationElement.textContent = formatTime(audio.duration);
+            });
+        }
+        
+        // 初始化普通话播放器
+        initAudioPlayer(mandarinAudio, mandarinDuration);
+        
+        // 初始化四川话播放器
+        initAudioPlayer(sichuanAudio, sichuanDuration);
+        
+        // 播放/暂停功能
+        function setupPlayPause(audio, playBtn, icon) {
+            playBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                } else {
+                    audio.pause();
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                }
+            });
+        }
+        
+        // 设置普通话播放/暂停
+        setupPlayPause(mandarinAudio, mandarinPlayBtn, mandarinIcon);
+        
+        // 设置四川话播放/暂停
+        setupPlayPause(sichuanAudio, sichuanPlayBtn, sichuanIcon);
+        
+        // 更新进度条
+        function updateProgress(audio, progress, currentTimeElement) {
+            audio.addEventListener('timeupdate', function() {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${percent}%`;
+                currentTimeElement.textContent = formatTime(audio.currentTime);
+            });
+        }
+        
+        // 设置普通话进度条更新
+        updateProgress(mandarinAudio, mandarinProgress, mandarinCurrentTime);
+        
+        // 设置四川话进度条更新
+        updateProgress(sichuanAudio, sichuanProgress, sichuanCurrentTime);
+        
+        // 点击进度条跳转
+        function setupProgressJump(audio, container) {
+            container.addEventListener('click', function(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audio.duration;
+                audio.currentTime = (clickX / width) * duration;
+            });
+        }
+        
+        // 设置普通话进度条跳转
+        setupProgressJump(mandarinAudio, mandarinProgressContainer);
+        
+        // 设置四川话进度条跳转
+        setupProgressJump(sichuanAudio, sichuanProgressContainer);
+        
+        // 音量控制
+        function setupVolumeControl(audio, volumeSlider, volumeLevel) {
+            volumeSlider.addEventListener('click', function(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const volume = clickX / width;
+                audio.volume = volume;
+                volumeLevel.style.width = `${volume * 100}%`;
+            });
+            
+            // 设置初始音量
+            audio.volume = 0.8;
+            volumeLevel.style.width = '80%';
+        }
+        
+        // 设置普通话音量控制
+        setupVolumeControl(mandarinAudio, mandarinVolume, mandarinVolumeLevel);
+        
+        // 设置四川话音量控制
+        setupVolumeControl(sichuanAudio, sichuanVolume, sichuanVolumeLevel);
+        
+        // 音频可视化
+        function animateBars(audio, bars) {
+            // 创建模拟音频分析器
+            let animationId;
+            
+            function animate() {
+                bars.forEach((bar, i) => {
+                    // 创建随机高度模拟音频波形
+                    const randomHeight = Math.floor(Math.random() * 80) + 20;
+                    bar.style.height = `${randomHeight}%`;
+                    
+                    // 根据播放状态调整动画速度
+                    const speed = audio.paused ? 0.5 : 0.2;
+                    bar.style.transition = `height ${speed}s ease`;
+                });
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // 开始动画
+            animate();
+            
+            // 当音频暂停时降低动画速度
+            audio.addEventListener('play', () => {
+                cancelAnimationFrame(animationId);
+                animate();
+            });
+        }
+        
+        // 初始化普通话可视化
+        animateBars(mandarinAudio, mandarinBars);
+        
+        // 初始化四川话可视化
+        animateBars(sichuanAudio, sichuanBars);
+        
+        // 当音频结束时重置按钮状态
+        function setupAudioEnd(audio, playBtn, icon) {
+            audio.addEventListener('ended', function() {
+                audio.currentTime = 0;
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            });
+        }
+        
+        // 设置普通话音频结束处理
+        setupAudioEnd(mandarinAudio, mandarinPlayBtn, mandarinIcon);
+        
+        // 设置四川话音频结束处理
+        setupAudioEnd(sichuanAudio, sichuanPlayBtn, sichuanIcon);
+    </script>
+</body>
+</html>
