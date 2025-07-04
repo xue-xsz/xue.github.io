@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>白泽·破妄 - 双语音频播放器</title>
+    <title>文鳐·乘风 - 双语音频播放器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background: linear-gradient(135deg, #1a237e, #311b92, #4a148c);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -32,14 +32,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M40,100 Q100,40 160,100 Q100,160 40,100Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(41, 182, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(236, 64, 122, 0.1) 0%, transparent 40%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M40,100 Q100,40 160,100 Q100,160 40,100Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
             z-index: -1;
         }
         
         .container {
             max-width: 1200px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(10, 15, 35, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
@@ -47,7 +50,7 @@
             padding: 40px 30px;
             position: relative;
             z-index: 2;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(100, 150, 255, 0.2);
         }
         
         header {
@@ -60,10 +63,10 @@
         h1 {
             font-size: 3.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            text-shadow: 0 0 15px rgba(179, 229, 252, 0.6);
             position: relative;
             display: inline-block;
-            background: linear-gradient(45deg, #ff6b6b, #ffa502);
+            background: linear-gradient(45deg, #81d4fa, #29b6f6, #0288d1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
@@ -76,7 +79,7 @@
             left: 25%;
             width: 50%;
             height: 4px;
-            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+            background: linear-gradient(90deg, transparent, #29b6f6, transparent);
             border-radius: 2px;
         }
         
@@ -87,6 +90,7 @@
             max-width: 600px;
             margin: 15px auto 0;
             line-height: 1.6;
+            color: #bbdefb;
         }
         
         .player-container {
@@ -98,7 +102,7 @@
         }
         
         .player-card {
-            background: rgba(30, 30, 50, 0.8);
+            background: rgba(25, 35, 70, 0.8);
             border-radius: 20px;
             width: 500px;
             padding: 30px;
@@ -106,7 +110,7 @@
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(100, 150, 255, 0.2);
         }
         
         .player-card:hover {
@@ -123,42 +127,43 @@
         .language-icon {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #3498db, #8e44ad);
+            background: linear-gradient(135deg, #29b6f6, #0288d1);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 2rem;
             margin-right: 20px;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 20px rgba(41, 182, 246, 0.5);
         }
         
         .mandarin .language-icon {
-            background: linear-gradient(135deg, #e74c3c, #e67e22);
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+            background: linear-gradient(135deg, #f48fb1, #ec407a);
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.5);
         }
         
         .sichuan .language-icon {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+            background: linear-gradient(135deg, #81c784, #66bb6a);
+            box-shadow: 0 0 20px rgba(102, 187, 106, 0.5);
         }
         
         .card-title {
             font-size: 1.8rem;
             font-weight: 600;
+            color: #e3f2fd;
         }
         
         .card-subtitle {
             font-size: 1.1rem;
             opacity: 0.8;
             margin-top: 5px;
-            color: #aaa;
+            color: #90caf9;
         }
         
         .visualizer {
             height: 120px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 10, 30, 0.4);
             border-radius: 10px;
             margin-bottom: 25px;
             display: flex;
@@ -171,18 +176,18 @@
         
         .bar {
             width: 8px;
-            background: linear-gradient(to top, #3498db, #1abc9c);
+            background: linear-gradient(to top, #29b6f6, #0288d1);
             margin: 0 2px;
             border-radius: 4px 4px 0 0;
             height: 20%;
         }
         
         .mandarin .bar {
-            background: linear-gradient(to top, #e74c3c, #f39c12);
+            background: linear-gradient(to top, #f48fb1, #ec407a);
         }
         
         .sichuan .bar {
-            background: linear-gradient(to top, #2ecc71, #27ae60);
+            background: linear-gradient(to top, #81c784, #66bb6a);
         }
         
         .controls {
@@ -194,7 +199,7 @@
         .play-btn {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #29b6f6, #0288d1);
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -202,7 +207,7 @@
             font-size: 2rem;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 20px rgba(41, 182, 246, 0.5);
             position: relative;
             overflow: hidden;
         }
@@ -224,26 +229,26 @@
         }
         
         .mandarin .play-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+            background: linear-gradient(135deg, #f48fb1, #ec407a);
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.5);
         }
         
         .sichuan .play-btn {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+            background: linear-gradient(135deg, #81c784, #66bb6a);
+            box-shadow: 0 0 20px rgba(102, 187, 106, 0.5);
         }
         
         .play-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(52, 152, 219, 0.8);
+            box-shadow: 0 0 30px rgba(41, 182, 246, 0.8);
         }
         
         .mandarin .play-btn:hover {
-            box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+            box-shadow: 0 0 30px rgba(236, 64, 122, 0.8);
         }
         
         .sichuan .play-btn:hover {
-            box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+            box-shadow: 0 0 30px rgba(102, 187, 106, 0.8);
         }
         
         .time-info {
@@ -265,7 +270,7 @@
         
         .progress {
             height: 100%;
-            background: linear-gradient(90deg, #3498db, #1abc9c);
+            background: linear-gradient(90deg, #29b6f6, #0288d1);
             border-radius: 4px;
             width: 0%;
             position: relative;
@@ -286,11 +291,11 @@
         }
         
         .mandarin .progress {
-            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            background: linear-gradient(90deg, #f48fb1, #ec407a);
         }
         
         .sichuan .progress {
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            background: linear-gradient(90deg, #81c784, #66bb6a);
         }
         
         .time {
@@ -299,6 +304,7 @@
             width: 100%;
             font-size: 0.9rem;
             opacity: 0.8;
+            color: #bbdefb;
         }
         
         .volume-container {
@@ -311,6 +317,7 @@
         .volume-container i {
             margin-right: 10px;
             opacity: 0.7;
+            color: #bbdefb;
         }
         
         .volume-slider {
@@ -324,17 +331,17 @@
         
         .volume-level {
             height: 100%;
-            background: #3498db;
+            background: #29b6f6;
             border-radius: 3px;
             width: 80%;
         }
         
         .mandarin .volume-level {
-            background: #e74c3c;
+            background: #ec407a;
         }
         
         .sichuan .volume-level {
-            background: #2ecc71;
+            background: #66bb6a;
         }
         
         .decoration {
@@ -348,17 +355,32 @@
             bottom: 20px;
             right: 20px;
             font-size: 6rem;
+            color: #f48fb1;
         }
         
         .sichuan .decoration {
             bottom: 10px;
             right: 30px;
             font-size: 5rem;
+            color: #81c784;
         }
         
         .player-card:hover .decoration {
             opacity: 0.2;
             transform: scale(1.1);
+        }
+        
+        .wave-decoration {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%2329b6f6"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%2329b6f6"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2329b6f6"/></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: -1;
+            opacity: 0.3;
         }
         
         footer {
@@ -367,15 +389,44 @@
             padding: 20px;
             font-size: 1rem;
             opacity: 0.7;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(179, 229, 252, 0.1);
+            color: #bbdefb;
         }
         
         .audio-notice {
             text-align: center;
             margin-top: 15px;
             font-size: 0.9rem;
-            color: #ff9999;
+            color: #f48fb1;
             font-style: italic;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .mandarin-color {
+            background: linear-gradient(90deg, #f48fb1, #ec407a);
+        }
+        
+        .sichuan-color {
+            background: linear-gradient(90deg, #81c784, #66bb6a);
         }
         
         @media (max-width: 1100px) {
@@ -422,17 +473,18 @@
     </style>
 </head>
 <body>
+    <div class="wave-decoration"></div>
     <div class="container">
         <header>
-            <h1>白泽·破妄</h1>
-            <p class="subtitle">探索神话中的神兽白泽，聆听普通话与四川话两种方言演绎的奇幻故事，感受语言带来的独特魅力。</p>
+            <h1>文鳐·乘风</h1>
+            <p class="subtitle">翱翔于神话天际的文鳐，在普通话与四川话的演绎中展现其乘风破浪的英姿，感受两种方言带来的独特韵味。</p>
         </header>
         
         <div class="player-container">
             <!-- 普通话版本 -->
             <div class="player-card mandarin">
                 <div class="decoration">
-                    <i class="fas fa-landmark"></i>
+                    <i class="fas fa-wind"></i>
                 </div>
                 
                 <div class="card-header">
@@ -441,7 +493,7 @@
                     </div>
                     <div>
                         <div class="card-title">普通话版</div>
-                        <div class="card-subtitle">白泽·破妄 (标准发音)</div>
+                        <div class="card-subtitle">文鳐·乘风 (标准发音)</div>
                     </div>
                 </div>
                 
@@ -484,14 +536,14 @@
                 </div>
                 
                 <audio id="mandarin-audio" preload="metadata">
-                    <source src="白泽·破妄（普通话版）.mp3" type="audio/mpeg">
+                    <source src="文鳐·乘风（普通话版）.mp3" type="audio/mpeg">
                 </audio>
             </div>
             
             <!-- 四川话版本 -->
             <div class="player-card sichuan">
                 <div class="decoration">
-                    <i class="fas fa-paw"></i>
+                    <i class="fas fa-feather-alt"></i>
                 </div>
                 
                 <div class="card-header">
@@ -500,7 +552,7 @@
                     </div>
                     <div>
                         <div class="card-title">四川话版</div>
-                        <div class="card-subtitle">白泽·破妄 (巴蜀韵味)</div>
+                        <div class="card-subtitle">文鳐·乘风 (巴蜀韵味)</div>
                     </div>
                 </div>
                 
@@ -543,17 +595,28 @@
                 </div>
                 
                 <audio id="sichuan-audio" preload="metadata">
-                    <source src="白泽·破妄（四川话版）.mp3" type="audio/mpeg">
+                    <source src="文鳐·乘风（四川话版）.mp3" type="audio/mpeg">
                 </audio>
             </div>
         </div>
         
-        <p class="audio-notice">*音频文件与HTML文件位于同一目录，可直接播放</p>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color mandarin-color"></div>
+                <span>普通话版</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color sichuan-color"></div>
+                <span>四川话版</span>
+            </div>
+        </div>
+        
+        <!-- <p class="audio-notice">*音频文件与HTML文件位于同一目录，可直接播放</p>
         
         <footer>
-            <p>音频文件: 白泽·破妄（普通话版）.mp3 | 白泽·破妄（四川话版）.mp3</p>
+            <p>音频文件: 文鳐·乘风（普通话版）.mp3 | 文鳐·乘风（四川话版）.mp3</p>
             <p>© 2023 音频播放器 | 设计：HTML/CSS/JavaScript</p>
-        </footer>
+        </footer> -->
     </div>
 
     <script>
